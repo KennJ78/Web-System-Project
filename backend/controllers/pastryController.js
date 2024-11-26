@@ -11,16 +11,12 @@ const getPastries = async (req, res) => {
   }
 };
 
-// Get a single pastry
+// Get a single pastry by pcode
 const getPastry = async (req, res) => {
-  const { id } = req.params;
-
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(404).json({ error: 'No such pastry' });
-  }
+  const { pcode } = req.params; 
 
   try {
-    const pastry = await Pastry.findById(id);
+    const pastry = await Pastry.findOne({ pcode });
 
     if (!pastry) {
       return res.status(404).json({ error: 'No such pastry' });
@@ -44,16 +40,12 @@ const createPastry = async (req, res) => {
   }
 };
 
-// Delete a pastry
+// Delete a pastry by pcode
 const deletePastry = async (req, res) => {
-  const { id } = req.params;
-
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ error: 'No such pastry' });
-  }
+  const { pcode } = req.params; 
 
   try {
-    const pastry = await Pastry.findOneAndDelete({ _id: id });
+    const pastry = await Pastry.findOneAndDelete({ pcode });
 
     if (!pastry) {
       return res.status(404).json({ error: 'No such pastry' });
@@ -65,22 +57,26 @@ const deletePastry = async (req, res) => {
   }
 };
 
-// Update a pastry
+// Update a pastry by pcode
 const updatePastry = async (req, res) => {
-  const { id } = req.params;
-
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ error: 'No such pastry' });
-  }
-
+  const { pcode } = req.params; 
+  const { pastryname, stocks } = req.body; 
   try {
-    const pastry = await Pastry.findOneAndUpdate({ _id: id }, { ...req.body }, { new: true });
+    // Use findOneAndUpdate with $set to update the specified fields
+    const pastry = await Pastry.findOneAndUpdate(
+      { pcode },
+      { $set: { pastryname, stocks } },
+      { new: true, runValidators: true } 
+    );
 
     if (!pastry) {
       return res.status(404).json({ error: 'No such pastry' });
     }
 
-    res.status(200).json(pastry);
+    res.status(200).json({
+      message: 'Pastry updated successfully',
+      pastry: pastry,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

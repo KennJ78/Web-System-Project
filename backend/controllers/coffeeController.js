@@ -11,16 +11,12 @@ const getCoffees = async (req, res) => {
   }
 };
 
-// Get a single coffee
+// Get a single coffee by ccode
 const getCoffee = async (req, res) => {
-  const { id } = req.params;
-
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(404).json({ error: 'No such coffee' });
-  }
+  const { ccode } = req.params;
 
   try {
-    const coffee = await Coffee.findById(id);
+    const coffee = await Coffee.findOne({ ccode });
 
     if (!coffee) {
       return res.status(404).json({ error: 'No such coffee' });
@@ -44,43 +40,46 @@ const createCoffee = async (req, res) => {
   }
 };
 
-// Delete a coffee
+// Delete a coffee by ccode
 const deleteCoffee = async (req, res) => {
-  const { id } = req.params;
-
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ error: 'No such coffee' });
-  }
+  const { ccode } = req.params;
 
   try {
-    const coffee = await Coffee.findOneAndDelete({ _id: id });
+    const coffee = await Coffee.findOneAndDelete({ ccode });
 
     if (!coffee) {
       return res.status(404).json({ error: 'No such coffee' });
     }
 
-    res.status(200).json(coffee);
+    res.status(200).json({
+      message: 'Coffee deleted successfully',
+      coffee: coffee,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-// Update a coffee
+// Update a coffee by ccode
 const updateCoffee = async (req, res) => {
-  const { id } = req.params;
-
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ error: 'No such coffee' });
-  }
+  const { ccode } = req.params;
+  const { coffeename, stocks } = req.body;
 
   try {
-    const coffee = await Coffee.findOneAndUpdate({ _id: id }, { ...req.body }, { new: true });
+    const coffee = await Coffee.findOneAndUpdate(
+      { ccode },
+      { $set: { coffeename, stocks } },
+      { new: true, runValidators: true }
+    );
 
     if (!coffee) {
       return res.status(404).json({ error: 'No such coffee' });
     }
 
-    res.status(200).json(coffee);
+    res.status(200).json({
+      message: 'Coffee updated successfully',
+      coffee: coffee,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

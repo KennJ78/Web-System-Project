@@ -1,7 +1,7 @@
 const Employee = require('../models/employeepostion');
 const mongoose = require('mongoose');
 
-// Get all employees position
+// Get all employee positions
 const getEmployees = async (req, res) => {
   try {
     const employees = await Employee.find({}).sort({ createdAt: -1 });
@@ -16,14 +16,14 @@ const getEmployee = async (req, res) => {
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(404).json({ error: 'No such employee' });
+    return res.status(404).json({ error: 'No such employee position' });
   }
 
   try {
     const employee = await Employee.findById(id);
 
     if (!employee) {
-      return res.status(404).json({ error: 'No such pastry' });
+      return res.status(404).json({ error: 'No such employee position' });
     }
 
     res.status(200).json(employee);
@@ -44,45 +44,53 @@ const createEmployee = async (req, res) => {
   }
 };
 
-// Delete a employee position
+// Delete an employee position by employee code (ecode)
 const deleteEmployee = async (req, res) => {
-  const { id } = req.params;
-
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ error: 'No such pastry' });
-  }
+  const { ecode } = req.params; 
 
   try {
-    const employee = await Employee.findOneAndDelete({ _id: id });
+    // Find and delete the employee by ecode
+    const employee = await Employee.findOneAndDelete({ ecode });
 
     if (!employee) {
-      return res.status(404).json({ error: 'No such pastry' });
+      return res.status(404).json({ error: 'No such employee position' });
     }
 
-    res.status(200).json(employee);
+    res.status(200).json({
+      message: 'Employee position deleted successfully',
+      employee,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-// Update a employee position
+// Update an employee position by ecode
 const updateEmployee = async (req, res) => {
-  const { id } = req.params;
-
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ error: 'No such pastry' });
-  }
+  const { ecode } = req.params; 
+  const { employeename, position } = req.body; 
 
   try {
-    const employee = await Employee.findOneAndUpdate({ _id: id }, { ...req.body }, { new: true });
+    // Find and update the employee by ecode
+    const updatedEmployee = await Employee.findOneAndUpdate(
+      { ecode }, 
+      { $set: { employeename, position } }, 
+      { new: true, runValidators: true }
+    );
 
-    if (!employee) {
-      return res.status(404).json({ error: 'No such pastry' });
+    if (!updatedEmployee) {
+      return res.status(404).json({ error: 'Employee not found' });
     }
 
-    res.status(200).json(employee);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(200).json({
+      message: 'Employee position updated successfully',
+      employee: updatedEmployee,
+    });
+  } catch (err) {
+    res.status(500).json({
+      error: 'Failed to update employee position',
+      details: err.message,
+    });
   }
 };
 

@@ -19,9 +19,9 @@ router.get('/:id', getBread)
 router.post('/', createBread)
 
 // DELETE a bread
-router.delete('/:id', deleteBread)
+router.delete('/:bcode', deleteBread)
 
 // UPDATE a bread
-router.patch('/:id', updateBread)
+router.put('/:bcode', updateBread)
 
 module.exports = router

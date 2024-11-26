@@ -19,9 +19,9 @@ router.get('/:id', getPastry)
 router.post('/', createPastry)
 
 // DELETE a pastry
-router.delete('/:id', deletePastry)
+router.delete('/:pcode', deletePastry)
 
 // UPDATE a pastry
-router.patch('/:id', updatePastry)
+router.put('/:pcode', updatePastry)
 
 module.exports = router

@@ -19,9 +19,8 @@ router.get('/:id', getCoffee)
 router.post('/', createCoffee)
 
 // DELETE a coffee
-router.delete('/:id', deleteCoffee)
+router.delete('/:ccode', deleteCoffee)
 
 // UPDATE a coffee
-router.patch('/:id', updateCoffee)
-
+router.put('/:ccode', updateCoffee)
 module.exports = router
