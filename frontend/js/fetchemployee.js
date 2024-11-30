@@ -37,7 +37,8 @@ const createEmployeeRow = (employee, index) => {
     deleteButton.classList.add('btn', 'btn-danger', 'bi', 'bi-trash');
     deleteButton.setAttribute('data-bs-toggle', 'modal');
     deleteButton.setAttribute('data-bs-target', '#deleteEmployeeModal');
-    deleteButton.onclick = () => confirmEmployeeDelete(employee.ecode);  // Use ecode for deletion
+
+    deleteButton.onclick = () => confirmEmployeeDelete(employee.ecode);  
 
     actionTd.append(editButton, deleteButton);
 
@@ -60,7 +61,9 @@ const confirmEmployeeDelete = (ecode) => {
             const response = await fetch(`http://localhost:5050/api/employeeposition/${ecode}`, { method: 'DELETE' });
             if (response.ok) {
                 alert("Employee deleted successfully.");
-                window.location.reload();  // Refresh the page to reflect the changes
+
+                window.location.reload();  
+
             } else {
                 console.error("Failed to delete employee:", await response.text());
             }
@@ -108,7 +111,9 @@ document.getElementById('editEmployeeForm').onsubmit = async (e) => {
         position: document.getElementById('editEmployeePosition').value,
     };
 
-    const ecode = updatedEmployee.ecode; // ecode as the identifier
+
+    const ecode = updatedEmployee.ecode; 
+
 
     try {
         const response = await fetch(`http://localhost:5050/api/employeeposition/${ecode}`, {

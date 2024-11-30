@@ -1,18 +1,22 @@
 const menu = document.querySelector('tbody');
 
 // Fetch all pastry data from the server
-const getPastryData = async () => {
+
+const getData = async () => {
     try {
-        const response = await fetch("http://localhost:5050/api/pastry");  // Correct API endpoint for pastries
+        const response = await fetch("http://localhost:5050/api/pastry");  
         const result = await response.json();
         return result;
     } catch (err) {
-        console.error("Failed to fetch pastry data:", err);
+        console.error("Failed to fetch data:", err);
+
     }
 };
 
 // Create a row for each pastry entry
-const createPastryRow = (pastry, index) => { // Add index parameter
+
+const createRow = (pastry, index) => { 
+
     const tr = document.createElement('tr');
 
     const noTd = document.createElement('td');
@@ -22,47 +26,95 @@ const createPastryRow = (pastry, index) => { // Add index parameter
     const actionTd = document.createElement('td');
 
     // Use the index for the "No." column
-    noTd.innerText = index + 1; // Add 1 to make it 1-based
 
+    noTd.innerText = index + 1; 
     codeTd.innerText = pastry.pcode;
     nameTd.innerText = pastry.pastryname;
     stockTd.innerText = pastry.stocks;
 
     const editButton = document.createElement('button');
     const deleteButton = document.createElement('button');
+    const restockButton = document.createElement('button');
 
-    editButton.classList.add('btn', 'btn-primary', 'bi', 'bi-pen');
+    editButton.classList.add('btn', 'btn-primary', 'bi', 'bi-box-arrow-down');
     editButton.setAttribute('data-bs-toggle', 'modal');
     editButton.setAttribute('data-bs-target', '#editPastryModal');
-    editButton.onclick = () => populateEditPastryForm(pastry);
+    editButton.onclick = () => populateEditForm(pastry);
 
-    deleteButton.classList.add('btn', 'btn-danger', 'bi', 'bi-trash');
+    deleteButton.classList.add('btn', 'bg-danger', 'bi', 'bi-trash');
     deleteButton.setAttribute('data-bs-toggle', 'modal');
     deleteButton.setAttribute('data-bs-target', '#deletePastryModal');
-    deleteButton.onclick = () => confirmPastryDelete(pastry.pcode); // Use pcode for deletion
+    deleteButton.onclick = () => confirmDelete(pastry.pcode);  
 
-    actionTd.append(editButton, deleteButton);
+    restockButton.classList.add('btn', 'btn-warning', 'bi', 'bi-arrow-up-square');
+    restockButton.setAttribute('data-bs-toggle', 'modal');
+    restockButton.setAttribute('data-bs-target', '#restockPastryModal');
+    restockButton.onclick = () => setRestockData(pastry.pcode, pastry.pastryname);
+
+    actionTd.append(editButton, deleteButton, restockButton);
+
 
     tr.append(noTd, codeTd, nameTd, stockTd, actionTd);
     return tr;
 };
 
 // Populate the form with data to edit
-const populateEditPastryForm = (pastry) => {
+
+const populateEditForm = (pastry) => {
+
     document.getElementById('editPastryCode').value = pastry.pcode;
     document.getElementById('editPastryName').value = pastry.pastryname;
     document.getElementById('editPastryStock').value = pastry.stocks;
 };
 
+// Handle restock functionality
+const setRestockData = (pcode, pastryname) => {
+    document.getElementById('restockPastryCode').value = pcode;
+    document.getElementById('restockPastryName').value = pastryname;
+};
+
+// Handle restocking pastry
+document.getElementById('restockPastryForm').onsubmit = async (e) => {
+    e.preventDefault();
+
+    const pcode = document.getElementById('restockPastryCode').value;
+    const restockAmount = document.getElementById('restockAmount').value;
+
+    if (!pcode || !restockAmount) {
+        alert("Both Pastry Code and Restock Amount are required.");
+        return;
+    }
+
+    try {
+        const response = await fetch(`http://localhost:5050/api/pastry/${pcode}/restock`, { 
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ restockAmount }),
+        });
+
+        if (response.ok) {
+            alert("Pastry restocked successfully.");
+            window.location.reload();
+        } else {
+            const errorText = await response.json();
+            console.error("Failed to restock pastry:", errorText);
+            alert(`Error: ${errorText.error}`);
+        }
+    } catch (err) {
+        console.error("Error restocking pastry:", err);
+        alert("An error occurred while restocking the pastry.");
+    }
+};
+
 // Handle deletion confirmation
-const confirmPastryDelete = (pcode) => {
+const confirmDelete = (pcode) => {
     const deleteButton = document.querySelector('#deletePastryModal .btn-danger');
     deleteButton.onclick = async () => {
         try {
-            const response = await fetch(`http://localhost:5050/api/pastry/${pcode}`, { method: 'DELETE' }); // Correct endpoint for deletion
+            const response = await fetch(`http://localhost:5050/api/pastry/${pcode}`, { method: 'DELETE' });
             if (response.ok) {
                 alert("Pastry deleted successfully.");
-                window.location.reload(); // Reload page to refresh the list
+                window.location.reload();
             } else {
                 console.error("Failed to delete pastry:", await response.text());
             }
@@ -83,7 +135,8 @@ document.getElementById('addPastryForm').onsubmit = async (e) => {
     };
 
     try {
-        const response = await fetch("http://localhost:5050/api/pastry", {  // Correct API endpoint for adding pastry
+
+        const response = await fetch("http://localhost:5050/api/pastry", {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newPastry),
@@ -91,7 +144,9 @@ document.getElementById('addPastryForm').onsubmit = async (e) => {
 
         if (response.ok) {
             alert("Pastry added successfully.");
-            window.location.reload(); // Reload the page to show the updated list
+
+            window.location.reload();
+
         } else {
             console.error("Failed to add pastry:", await response.text());
         }
@@ -110,10 +165,11 @@ document.getElementById('editPastryForm').onsubmit = async (e) => {
         stocks: document.getElementById('editPastryStock').value,
     };
 
-    const pcode = updatedPastry.pcode; // Using pcode as unique identifier
+    const pcode = updatedPastry.pcode;
 
     try {
-        const response = await fetch(`http://localhost:5050/api/pastry/${pcode}`, {  // Correct API endpoint for updating
+        const response = await fetch(`http://localhost:5050/api/pastry/${pcode}`, {
+
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(updatedPastry),
@@ -121,7 +177,7 @@ document.getElementById('editPastryForm').onsubmit = async (e) => {
 
         if (response.ok) {
             alert("Pastry updated successfully.");
-            window.location.reload(); // Reload the page to show the updated list
+            window.location.reload();
         } else {
             console.error("Failed to update pastry:", await response.text());
         }
@@ -131,11 +187,13 @@ document.getElementById('editPastryForm').onsubmit = async (e) => {
 };
 
 // Load pastry data and display it
-getPastryData()
+
+getData()
     .then((pastries) => {
         if (pastries) {
-            pastries.forEach((pastry, index) => { // Pass index to create rows
-                menu.append(createPastryRow(pastry, index));
+            pastries.forEach((pastry, index) => {
+                menu.append(createRow(pastry, index));
+
             });
         }
     })

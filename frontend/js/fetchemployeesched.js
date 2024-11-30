@@ -35,7 +35,9 @@ const createScheduleRow = (schedule, index) => {
     deleteButton.classList.add('btn', 'btn-danger', 'bi', 'bi-trash');
     deleteButton.setAttribute('data-bs-toggle', 'modal');
     deleteButton.setAttribute('data-bs-target', '#deleteEmployeeschedModal');
-    deleteButton.onclick = () => confirmScheduleDelete(schedule.employeename);  // Passing employeename for deletion
+
+    deleteButton.onclick = () => confirmScheduleDelete(schedule.employeename);  
+
 
     actionTd.append(editButton, deleteButton);
 
@@ -59,7 +61,9 @@ const confirmScheduleDelete = (employeename) => {
             const response = await fetch(`http://localhost:5050/api/employeeschedule/${employeename}`, { method: 'DELETE' });
             if (response.ok) {
                 alert("Schedule deleted successfully.");
-                window.location.reload();  // Refresh the page to reflect the changes
+
+                window.location.reload();  
+
             } else {
                 const errorData = await response.json();
                 console.error("Failed to delete schedule:", errorData.error);
