@@ -1,27 +1,24 @@
-const express = require('express')
-const {
-  getCoffees, 
-  getCoffee, 
-  createCoffee, 
-  deleteCoffee, 
-  updateCoffee
-} = require('../controllers/coffeeController')
+const express = require('express');
+const coffeeController = require('../controllers/coffeeController');
 
-const router = express.Router()
+const router = express.Router();
 
-// GET all coffees
-router.get('/', getCoffees)
+// Get all coffee ingredients
+router.get('/', coffeeController.getCoffees);
 
-// GET a single coffee
-router.get('/:id', getCoffee)
+// Get a single coffee ingredient by ccode
+router.get('/:ccode', coffeeController.getCoffee);
 
-// POST a new coffee
-router.post('/', createCoffee)
+// Create a new coffee ingredient
+router.post('/', coffeeController.createCoffee);
 
-// DELETE a coffee
-router.delete('/:id', deleteCoffee)
+// Delete a coffee ingredient by ccode
+router.delete('/:ccode', coffeeController.deleteCoffee);
 
-// UPDATE a coffee
-router.patch('/:id', updateCoffee)
+// Update a coffee ingredient by ccode
+router.put('/:ccode', coffeeController.updateCoffee);
 
-module.exports = router
+// Restock coffee (increase stock) by ccode
+router.put('/:ccode/restock', coffeeController.restockCoffee);
+
+module.exports = router;

@@ -1,5 +1,4 @@
 const Bread = require('../models/bread');
-const mongoose = require('mongoose');
 
 // Get all breads
 const getBreads = async (req, res) => {
@@ -11,16 +10,12 @@ const getBreads = async (req, res) => {
   }
 };
 
-// Get a single bread
+// Get a single bread by bcode
 const getBread = async (req, res) => {
-  const { id } = req.params;
-
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(404).json({ error: 'No such bread' });
-  }
+  const { bcode } = req.params;
 
   try {
-    const bread = await Bread.findById(id);
+    const bread = await Bread.findOne({ bcode });
 
     if (!bread) {
       return res.status(404).json({ error: 'No such bread' });
@@ -44,44 +39,81 @@ const createBread = async (req, res) => {
   }
 };
 
-// Delete a bread
+// Delete a bread by bcode
 const deleteBread = async (req, res) => {
-  const { id } = req.params;
-
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ error: 'No such bread' });
-  }
+  const { bcode } = req.params;
 
   try {
-    const bread = await Bread.findOneAndDelete({ _id: id });
+    const bread = await Bread.findOneAndDelete({ bcode });
 
     if (!bread) {
       return res.status(404).json({ error: 'No such bread' });
     }
 
-    res.status(200).json(bread);
+    res.status(200).json({
+      message: 'Bread deleted successfully',
+      bread: bread,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-// Update a bread
+// Update a bread by bcode
 const updateBread = async (req, res) => {
-  const { id } = req.params;
-
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ error: 'No such bread' });
-  }
+  const { bcode } = req.params;
+  const { breadname, stocks } = req.body;
 
   try {
-    const bread = await Bread.findOneAndUpdate({ _id: id }, { ...req.body }, { new: true });
+    const bread = await Bread.findOneAndUpdate(
+      { bcode },
+      { $set: { breadname, stocks } },
+      { new: true, runValidators: true }
+    );
 
     if (!bread) {
       return res.status(404).json({ error: 'No such bread' });
     }
 
-    res.status(200).json(bread);
+    res.status(200).json({
+      message: 'Bread updated successfully',
+      bread: bread,
+    });
   } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Restock bread (increase stock)
+const restockBread = async (req, res) => {
+  const { restockAmount } = req.body;
+  const { bcode } = req.params;
+
+  try {
+    if (!bcode || !restockAmount) {
+      return res.status(400).json({ error: 'bcode and restockAmount are required' });
+    }
+
+    const amount = parseInt(restockAmount, 10);
+    if (isNaN(amount) || amount <= 0) {
+      return res.status(400).json({ error: 'Invalid restock amount' });
+    }
+
+    const bread = await Bread.findOne({ bcode }); // Find bread by bcode
+    if (!bread) {
+      console.error(`No bread found for bcode: ${bcode}`);  // Corrected line
+      return res.status(404).json({ error: 'No such bread' });
+    }
+
+    bread.stocks += amount;
+    await bread.save();
+
+    res.status(200).json({
+      message: 'Bread restocked successfully',
+      bread,
+    });
+  } catch (error) {
+    console.error('Error restocking bread:', error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -92,4 +124,7 @@ module.exports = {
   createBread,
   deleteBread,
   updateBread,
+  restockBread,
 };
+ 
+

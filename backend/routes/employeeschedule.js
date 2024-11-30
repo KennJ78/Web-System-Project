@@ -19,9 +19,10 @@ router.get('/:id', getEmployeesched)
 router.post('/', createEmployeesched)
 
 // DELETE a employee position
-router.delete('/:id', deleteEmployeesched)
+router.delete('/:employeename', deleteEmployeesched)
 
 // UPDATE a employee position
-router.patch('/:id', updateEmployeesched)
+router.put('/:employeename', updateEmployeesched);
+
 
 module.exports = router

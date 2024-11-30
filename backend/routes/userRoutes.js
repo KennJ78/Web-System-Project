@@ -1,14 +1,17 @@
 const express = require('express');
-const { showRegisterPage, registerUser, loginUser } = require('../controllers/userController');
+const userController = require('../controllers/userController');
 const router = express.Router();
 
 // Route for registration page
-router.get('/', showRegisterPage);
+router.get('/', userController.showRegisterPage);
 
-// Route for registration submission
-router.post('/post', registerUser);
+// Route for registration submission (HTML form)
+router.post('/post', userController.registerUser);
 
-// Route for login submission
-router.post('/login', loginUser);
+// Route for login submission (HTML form)
+router.post('/login', userController.loginUser);
+
+// API route for creating a new account (Postman)
+router.post('/api/create-account', userController.createAccount);
 
 module.exports = router;

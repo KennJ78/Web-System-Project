@@ -1,27 +1,13 @@
-const express = require('express')
-const {
-  getBreads, 
-  getBread, 
-  createBread, 
-  deleteBread, 
-  updateBread
-} = require('../controllers/breadController')
+const express = require('express');
+const breadController = require('../controllers/breadController');
 
-const router = express.Router()
+const router = express.Router();
 
-// GET all breads
-router.get('/', getBreads)
+router.get('/', breadController.getBreads);
+router.get('/:bcode', breadController.getBread);
+router.post('/', breadController.createBread);
+router.delete('/:bcode', breadController.deleteBread);
+router.put('/:bcode', breadController.updateBread);
+router.put('/:bcode/restock', breadController.restockBread); // Restock by bcode
 
-// GET a single bread
-router.get('/:id', getBread)
-
-// POST a new bread
-router.post('/', createBread)
-
-// DELETE a bread
-router.delete('/:id', deleteBread)
-
-// UPDATE a bread
-router.patch('/:id', updateBread)
-
-module.exports = router
+module.exports = router;
