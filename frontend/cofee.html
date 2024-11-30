@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="css/cafe.css">
+    <title>Coffeesticated - Coffee Ingredients Inventory</title>
+</head>
+<body>
+    <header class="text-warning d-flex align-items-center p-2">
+        <img src="images/coffeesticated.png" alt="Coffeesticated Logo" class="logo">
+        <h2 class="head ms-2">CMS</h2>
+    </header>
+    
+    <div class="sidebar">
+        <nav class="nav flex-column">
+            <a class="nav-link" href="cafe.html">            
+                <span class="icons">
+                    <i class="bi bi-inboxes-fill"></i>
+                </span>
+                <span class="description">Stocks</span>
+            </a> 
+            <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#submenu" aria-expanded="false" aria-controls="submenu">            
+                <span class="icons">
+                    <i class="bi bi-clipboard-check-fill"></i>
+                </span>
+                <span class="description">Inventory <i class="bi bi-caret-down-fill"></i></span>
+            </a>
+            <div class="sub-menu" id="submenu">
+                <a class="nav-link" href="bread.html">            
+                    <span class="description">Bread</span>
+                </a>
+                <a class="nav-link" href="cofee.html">            
+                    <span class="description">Coffee Ingredients</span>
+                </a>
+                <a class="nav-link" href="pasties.html">            
+                    <span class="description">Pastries</span>
+                </a>
+            </div>
+            <a class="nav-link" href="employee.html">            
+                <span class="icons">
+                    <i class="bi bi-people-fill"></i>
+                </span>
+                <span class="description">Employee</span>
+            </a>
+            <a class="nav-link" href="employeesched.html">            
+                <span class="icons">
+                    <i class="bi bi-calendar-check-fill"></i>
+                </span>
+                <span class="description">Employee Schedule</span>
+            </a>
+            <a class="nav-link" href="login.html">            
+                <span class="icons">
+                    <i class="bi bi-box-arrow-right"></i>
+                </span>
+                <span class="description">Logout</span>
+            </a>
+        </nav>
+    </div>
+
+    <main class="main-content">
+        <h1 class="mb-5">Coffee Ingredients Inventory</h1>
+        <div class="add-coffee mb-3">
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addCoffeeModal">
+                <i class="bi bi-plus-circle"></i> Add Coffee Ingredient
+            </button>
+        </div>
+        <div class="container">
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">No.</th>
+                        <th scope="col">C Code</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Stock</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+   <!-- Add Coffee Modal -->
+<div class="modal fade" id="addCoffeeModal" tabindex="-1" aria-labelledby="addCoffeeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addCoffeeModalLabel">Add Coffee Ingredient</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addCoffeeForm">
+                    <div class="mb-3">
+                        <label for="coffeeCode" class="form-label">Coffee Code</label>
+                        <input type="text" class="form-control" id="coffeeCode" placeholder="Enter coffee code" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="coffeeName" class="form-label">Coffee Name</label>
+                        <input type="text" class="form-control" id="coffeeName" placeholder="Enter coffee name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="coffeeStock" class="form-label">Stock</label>
+                        <input type="number" class="form-control" id="coffeeStock" placeholder="Enter stock amount" required>
+                    </div>
+                    <button type="submit" class="btn btn-success">Add Coffee Ingredient</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Coffee Modal -->
+<div class="modal fade" id="editCoffeeModal" tabindex="-1" aria-labelledby="editCoffeeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editCoffeeModalLabel">Edit Coffee Ingredient</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editCoffeeForm">
+                    <div class="mb-3">
+                        <label for="editCoffeeCode" class="form-label">Coffee Code</label>
+                        <input type="text" class="form-control" id="editCoffeeCode" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editCoffeeName" class="form-label">Coffee Name</label>
+                        <input type="text" class="form-control" id="editCoffeeName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editCoffeeStock" class="form-label">Stock</label>
+                        <input type="number" class="form-control" id="editCoffeeStock" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Coffee Modal -->
+<div class="modal fade" id="deleteCoffeeModal" tabindex="-1" aria-labelledby="deleteCoffeeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteCoffeeModalLabel">Delete Coffee Ingredient</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this coffee ingredient?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Restock Coffee Modal -->
+<div class="modal fade" id="restockModal" tabindex="-1" aria-labelledby="restockModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="restockModalLabel">Restock Coffee Ingredient</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="restockCoffeeForm">
+                    <div class="mb-3">
+                        <label for="restockCoffeeCode" class="form-label">Coffee Code</label>
+                        <input type="text" class="form-control" id="restockCoffeeCode" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="restockCoffeeName" class="form-label">Coffee Name</label>
+                        <input type="text" class="form-control" id="restockCoffeeName" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="restockAmount" class="form-label">Restock Amount</label>
+                        <input type="number" class="form-control" id="restockAmount" placeholder="Enter amount to restock" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-warning">Restock</button>
+                      </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="js/fetchcoffee.js"></script>
+</body>
+</html>
