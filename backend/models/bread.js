@@ -12,7 +12,7 @@ const breadSchema = new Schema({
     required: true
   },
   stocks: {
-    type: Number,
+    type: Number, 
     required: true
   }
 }, { timestamps: true })

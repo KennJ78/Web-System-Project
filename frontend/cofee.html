@@ -16,6 +16,12 @@
     
     <div class="sidebar">
         <nav class="nav flex-column">
+            <a class="nav-link" href="cafe.html">            
+                <span class="icons">
+                    <i class="bi bi-inboxes-fill"></i>
+                </span>
+                <span class="description">Stocks</span>
+            </a> 
             <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#submenu" aria-expanded="false" aria-controls="submenu">            
                 <span class="icons">
                     <i class="bi bi-clipboard-check-fill"></i>
@@ -73,7 +79,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                   
+                    
                 </tbody>
             </table>
         </div>
@@ -156,6 +162,36 @@
     </div>
 </div>
 
+<!-- Restock Coffee Modal -->
+<div class="modal fade" id="restockModal" tabindex="-1" aria-labelledby="restockModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="restockModalLabel">Restock Coffee Ingredient</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="restockCoffeeForm">
+                    <div class="mb-3">
+                        <label for="restockCoffeeCode" class="form-label">Coffee Code</label>
+                        <input type="text" class="form-control" id="restockCoffeeCode" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="restockCoffeeName" class="form-label">Coffee Name</label>
+                        <input type="text" class="form-control" id="restockCoffeeName" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="restockAmount" class="form-label">Restock Amount</label>
+                        <input type="number" class="form-control" id="restockAmount" placeholder="Enter amount to restock" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-warning">Restock</button>
+                      </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="js/fetchcoffee.js"></script>

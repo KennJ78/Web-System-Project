@@ -1,27 +1,24 @@
-const express = require('express')
-const {
-  getPastries, 
-  getPastry, 
-  createPastry, 
-  deletePastry, 
-  updatePastry
-} = require('../controllers/pastryController')
+const express = require('express');
+const pastryController = require('../controllers/pastryController');
 
-const router = express.Router()
+const router = express.Router();
 
-// GET all pastries
-router.get('/', getPastries)
+// Get all pastry items
+router.get('/', pastryController.getPastries);
 
-// GET a single pastry
-router.get('/:id', getPastry)
+// Get a single pastry by pcode
+router.get('/:pcode', pastryController.getPastry);
 
-// POST a new pastry
-router.post('/', createPastry)
+// Create a new pastry
+router.post('/', pastryController.createPastry);
 
-// DELETE a pastry
-router.delete('/:pcode', deletePastry)
+// Delete a pastry by pcode
+router.delete('/:pcode', pastryController.deletePastry);
 
-// UPDATE a pastry
-router.put('/:pcode', updatePastry)
+// Update a pastry by pcode
+router.put('/:pcode', pastryController.updatePastry);
 
-module.exports = router
+// Restock pastry (increase stock) by pcode
+router.put('/:pcode/restock', pastryController.restockPastry);
+
+module.exports = router;

@@ -1,5 +1,4 @@
 const Bread = require('../models/bread');
-const mongoose = require('mongoose');
 
 // Get all breads
 const getBreads = async (req, res) => {
@@ -85,10 +84,47 @@ const updateBread = async (req, res) => {
   }
 };
 
+// Restock bread (increase stock)
+const restockBread = async (req, res) => {
+  const { restockAmount } = req.body;
+  const { bcode } = req.params;
+
+  try {
+    if (!bcode || !restockAmount) {
+      return res.status(400).json({ error: 'bcode and restockAmount are required' });
+    }
+
+    const amount = parseInt(restockAmount, 10);
+    if (isNaN(amount) || amount <= 0) {
+      return res.status(400).json({ error: 'Invalid restock amount' });
+    }
+
+    const bread = await Bread.findOne({ bcode }); // Find bread by bcode
+    if (!bread) {
+      console.error(`No bread found for bcode: ${bcode}`);  // Corrected line
+      return res.status(404).json({ error: 'No such bread' });
+    }
+
+    bread.stocks += amount;
+    await bread.save();
+
+    res.status(200).json({
+      message: 'Bread restocked successfully',
+      bread,
+    });
+  } catch (error) {
+    console.error('Error restocking bread:', error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   getBreads,
   getBread,
   createBread,
   deleteBread,
   updateBread,
+  restockBread,
 };
+ 
+

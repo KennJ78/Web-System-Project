@@ -1,7 +1,6 @@
 const Coffee = require('../models/coffee');
-const mongoose = require('mongoose');
 
-// Get all coffees
+// Get all coffee ingredients
 const getCoffees = async (req, res) => {
   try {
     const coffees = await Coffee.find({}).sort({ createdAt: -1 });
@@ -11,7 +10,7 @@ const getCoffees = async (req, res) => {
   }
 };
 
-// Get a single coffee by ccode
+// Get a single coffee ingredient by ccode
 const getCoffee = async (req, res) => {
   const { ccode } = req.params;
 
@@ -19,7 +18,7 @@ const getCoffee = async (req, res) => {
     const coffee = await Coffee.findOne({ ccode });
 
     if (!coffee) {
-      return res.status(404).json({ error: 'No such coffee' });
+      return res.status(404).json({ error: 'No such coffee ingredient' });
     }
 
     res.status(200).json(coffee);
@@ -28,7 +27,7 @@ const getCoffee = async (req, res) => {
   }
 };
 
-// Create a new coffee
+// Create a new coffee ingredient
 const createCoffee = async (req, res) => {
   const { ccode, coffeename, stocks } = req.body;
 
@@ -40,7 +39,7 @@ const createCoffee = async (req, res) => {
   }
 };
 
-// Delete a coffee by ccode
+// Delete a coffee ingredient by ccode
 const deleteCoffee = async (req, res) => {
   const { ccode } = req.params;
 
@@ -48,11 +47,11 @@ const deleteCoffee = async (req, res) => {
     const coffee = await Coffee.findOneAndDelete({ ccode });
 
     if (!coffee) {
-      return res.status(404).json({ error: 'No such coffee' });
+      return res.status(404).json({ error: 'No such coffee ingredient' });
     }
 
     res.status(200).json({
-      message: 'Coffee deleted successfully',
+      message: 'Coffee ingredient deleted successfully',
       coffee: coffee,
     });
   } catch (error) {
@@ -60,7 +59,7 @@ const deleteCoffee = async (req, res) => {
   }
 };
 
-// Update a coffee by ccode
+// Update a coffee ingredient by ccode
 const updateCoffee = async (req, res) => {
   const { ccode } = req.params;
   const { coffeename, stocks } = req.body;
@@ -73,12 +72,44 @@ const updateCoffee = async (req, res) => {
     );
 
     if (!coffee) {
-      return res.status(404).json({ error: 'No such coffee' });
+      return res.status(404).json({ error: 'No such coffee ingredient' });
     }
 
     res.status(200).json({
-      message: 'Coffee updated successfully',
+      message: 'Coffee ingredient updated successfully',
       coffee: coffee,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Restock coffee (increase stock)
+const restockCoffee = async (req, res) => {
+  const { restockAmount } = req.body;
+  const { ccode } = req.params;
+
+  try {
+    if (!ccode || !restockAmount) {
+      return res.status(400).json({ error: 'ccode and restockAmount are required' });
+    }
+
+    const amount = parseInt(restockAmount, 10);
+    if (isNaN(amount) || amount <= 0) {
+      return res.status(400).json({ error: 'Invalid restock amount' });
+    }
+
+    const coffee = await Coffee.findOne({ ccode });
+    if (!coffee) {
+      return res.status(404).json({ error: 'No such coffee ingredient' });
+    }
+
+    coffee.stocks += amount;
+    await coffee.save();
+
+    res.status(200).json({
+      message: 'Coffee ingredient restocked successfully',
+      coffee,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -91,4 +122,5 @@ module.exports = {
   createCoffee,
   deleteCoffee,
   updateCoffee,
+  restockCoffee,
 };
