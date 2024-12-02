@@ -29,39 +29,28 @@ const registerUser = async (req, res) => {
         res.status(500).send('Error during registration');
     }
 };
-
-// Handle login form submissions (for HTML forms)
+//Handle User Login
 const loginUser = async (req, res) => {
     try {
         const { email, password, role } = req.body;
         const user = await User.findOne({ email });
 
         if (!user) {
-            console.log('Email not found');
-            return res.sendFile(path.join(__dirname, '../../frontend/login.html'), {
-                error: 'Email not found. Please register or try again.',
-            });
+            return res.status(400).json({ error: 'Email not found. Please register or try again.' });
         }
 
         if (user.password === password && user.role === role) {
-            if (user.role === 'admin') {
-                console.log('Admin login successful');
-                return res.sendFile(path.join(__dirname, '../../frontend/cafe.html'));
-            } else if (user.role === 'employee') {
-                console.log('Employee login successful');
-                return res.sendFile(path.join(__dirname, '../../frontend/employeego.html'));
-            }
+            const redirectUrl = user.role === 'admin' ? '/cafe.html' : '/employeego.html';
+            return res.status(200).json({ redirectUrl });
         }
 
-        console.log('Incorrect password or role');
-        return res.sendFile(path.join(__dirname, '../../frontend/login.html'), {
-            error: 'Incorrect password or role. Please try again.',
-        });
+        return res.status(400).json({ error: 'Incorrect password or role. Please try again.' });
     } catch (err) {
         console.error('Error during login:', err);
-        res.sendFile(path.join(__dirname, '../../frontend/login.html'));
+        return res.status(500).json({ error: 'An error occurred during login. Please try again later.' });
     }
 };
+
 
 // Handle account creation for API (for Postman)
 const createAccount = async (req, res) => {
